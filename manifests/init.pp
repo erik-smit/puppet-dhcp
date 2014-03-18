@@ -94,7 +94,7 @@ class dhcp (
       ensure    => running,
       enable    => true,
       hasstatus => true,
-      subscribe => Concat["${dhcp_dir}/dhcpd.hosts", "${dhcp_dir}/dhcpd.conf"],
+      subscribe => Concat["${dhcp_dir}/dhcp.hosts", "${dhcp_dir}/dhcpd.conf"],
       require   => Package[$packagename],
   }
 
