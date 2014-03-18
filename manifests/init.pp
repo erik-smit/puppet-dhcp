@@ -79,13 +79,13 @@ class dhcp (
     content => template('dhcp/dhcpd.conf.erb'),
   }
 
-  concat { "${dhcp_dir}/dhcp.hosts":
+  concat { "${dhcp_dir}/dhcpd.hosts":
     require => Package[$packagename],
     notify  => [Service[$servicename]],
   }
 
   concat::fragment { 'dhcp.hosts+01_main.hosts':
-    target  => "${dhcp_dir}/dhcp.hosts",
+    target  => "${dhcp_dir}/dhcpd.hosts",
     content => "# static DHCP hosts\n",
   }
 
@@ -94,7 +94,7 @@ class dhcp (
       ensure    => running,
       enable    => true,
       hasstatus => true,
-      subscribe => Concat["${dhcp_dir}/dhcp.hosts", "${dhcp_dir}/dhcpd.conf"],
+      subscribe => Concat["${dhcp_dir}/dhcpd.hosts", "${dhcp_dir}/dhcpd.conf"],
       require   => Package[$packagename],
   }
 
