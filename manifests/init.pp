@@ -69,37 +69,25 @@ class dhcp (
     }
   }
 
-  concat_build { 'dhcp.conf':
+  concat { "${dhcp_dir}/dhcpd.conf":
     order   => ['*.dhcp'],
     require => Package[$packagename],
-    notify  => [Service[$servicename],File["${dhcp_dir}/dhcpd.conf"]],
-  }
-  file { "${dhcp_dir}/dhcpd.conf":
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    source  => concat_output('dhcp.conf'),
-    require => [Package[$packagename],Concat_build['dhcp.conf']],
+    notify  => [Service[$servicename]],
   }
 
-  concat_fragment { 'dhcp.conf+01_main.dhcp':
+  concat::fragment { 'dhcp.conf+01_main.dhcp':
+    target  => "${dhcp_dir}/dhcpd.conf",
     content => template('dhcp/dhcpd.conf.erb'),
   }
 
-  concat_build { 'dhcp.hosts':
+  concat { "${dhcp_dir}/dhcp.hosts":
     order   => ['*.hosts'],
     require => Package[$packagename],
-    notify  => [Service[$servicename],File["${dhcp_dir}/dhcpd.hosts"]],
-  }
-  file { "${dhcp_dir}/dhcpd.hosts":
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    source  => concat_output('dhcp.hosts'),
-    require => [Package[$packagename],Concat_build['dhcp.hosts']],
+    notify  => [Service[$servicename]],
   }
 
-  concat_fragment { 'dhcp.hosts+01_main.hosts':
+  concat::fragment { 'dhcp.hosts+01_main.hosts':
+    target  => "${dhcp_dir}/dhcp.hosts",
     content => "# static DHCP hosts\n",
   }
 
@@ -108,7 +96,7 @@ class dhcp (
       ensure    => running,
       enable    => true,
       hasstatus => true,
-      subscribe => File["${dhcp_dir}/dhcpd.hosts", "${dhcp_dir}/dhcpd.conf"],
+      subscribe => Concat["${dhcp_dir}/dhcpd.hosts", "${dhcp_dir}/dhcpd.conf"],
       require   => Package[$packagename],
   }
 
