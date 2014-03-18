@@ -70,7 +70,6 @@ class dhcp (
   }
 
   concat { "${dhcp_dir}/dhcpd.conf":
-    order   => ['*.dhcp'],
     require => Package[$packagename],
     notify  => [Service[$servicename]],
   }
@@ -81,7 +80,6 @@ class dhcp (
   }
 
   concat { "${dhcp_dir}/dhcp.hosts":
-    order   => ['*.hosts'],
     require => Package[$packagename],
     notify  => [Service[$servicename]],
   }
