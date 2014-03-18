@@ -9,7 +9,8 @@ define dhcp::pool (
 
     $dhcp_dir = $dhcp::params::dhcp_dir
 
-    concat_fragment { "dhcp.conf+70_${name}.dhcp":
+    concat{ "dhcpd.conf+70_${name}.dhcp":
+      target  => "${dhcp_dir}/dhcpd.conf",
       content => template('dhcp/dhcpd.pool.erb'),
     }
 
